@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: amazon-rag-chatbot
+    runtime: python
+    plan: standard          # sentence-transformers/torch need more than the 512MB free/starter tier
+    region: oregon
+    branch: main
+    buildCommand: "pip install -r requirements.txt && python -m app.ingest"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    healthCheckPath: /api/health
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false          # set manually in the Render dashboard (secret)
+      - key: GEMINI_MODEL
+        value: gemini-2.5-flash
+      - key: SOURCE_URL
+        value: https://www.sec.gov/Archives/edgar/data/0001018724/000101872426000014/amzn-20260331.htm
+      - key: SOURCE_LABEL
+        value: "Amazon.com, Inc. Form 10-Q (Quarter Ended March 31, 2026)"
+      - key: PYTHON_VERSION
+        value: 3.11.9

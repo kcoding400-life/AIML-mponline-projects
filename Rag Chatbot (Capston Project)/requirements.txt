@@ -1,0 +1,19 @@
+# CPU-only PyTorch build: avoids pulling multi-GB NVIDIA/CUDA packages that
+# are useless on Render's CPU-only instances and can blow past build size
+# limits. pip checks --extra-index-url in addition to PyPI, so everything
+# else below still resolves normally from PyPI.
+
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+pydantic==2.9.2
+requests==2.32.3
+beautifulsoup4==4.12.3
+pypdf==4.3.1
+numpy==2.0.0
+faiss-cpu==1.9.0.post1
+torch==2.13.0+cpu
+sentence-transformers==3.0.1
+google-genai>=1.2.0
+python-dotenv==1.0.1

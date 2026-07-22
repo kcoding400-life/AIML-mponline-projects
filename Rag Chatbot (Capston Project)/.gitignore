@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+data/index/*.faiss
+data/index/*.json
+!data/source/.gitkeep
+.DS_Store
