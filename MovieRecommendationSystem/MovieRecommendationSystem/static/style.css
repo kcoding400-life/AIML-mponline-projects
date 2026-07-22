@@ -1,0 +1,224 @@
+:root{
+  --bg: #24262B;
+  --panel: #2F323A;
+  --paper: #E9E4D8;
+  --paper-shadow: #d9d3c3;
+  --ink: #2B2A28;
+  --ink-soft: #5b574e;
+  --yellow: #F2B705;
+  --teal: #3F8C82;
+  --rust: #B5493F;
+  --muted: #9A968C;
+}
+
+*{ box-sizing: border-box; }
+
+body{
+  margin:0;
+  min-height:100vh;
+  background: var(--bg);
+  color: var(--paper);
+  font-family: 'JetBrains Mono', monospace;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.garage-bg{
+  position: fixed; inset:0; z-index:0;
+  background:
+    radial-gradient(ellipse at 20% -10%, rgba(242,183,5,0.06), transparent 55%),
+    radial-gradient(ellipse at 90% 110%, rgba(63,140,130,0.08), transparent 55%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0 1px, transparent 1px 3px),
+    var(--bg);
+}
+.chalk-scratch{ position:absolute; opacity:0.05; border:1.5px dashed var(--paper); border-radius:50%; }
+.s1{ width:520px; height:520px; top:-160px; right:-160px; }
+.s2{ width:340px; height:340px; bottom:-120px; left:-100px; }
+
+.wrap{
+  position: relative; z-index:1;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 48px 24px 32px;
+}
+
+/* ---------- header ---------- */
+.shop-header{
+  display:flex; align-items:center; gap:20px;
+  padding-bottom:24px; margin-bottom:32px;
+  border-bottom: 2px solid rgba(233,228,216,0.15);
+}
+.shop-mark{ color: var(--yellow); flex-shrink:0; }
+.wrench-icon{ width:40px; height:40px; }
+.shop-title{ flex:1; }
+h1{
+  font-family:'Oswald', sans-serif;
+  font-weight:700;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  letter-spacing: 0.5px;
+  margin:0 0 4px;
+  text-transform: uppercase;
+}
+h1 .dim{ color: var(--muted); font-weight:500; }
+.tagline{ margin:0; color: var(--muted); font-size:0.85rem; }
+.shop-badge{
+  font-family:'Oswald',sans-serif;
+  border: 2px solid var(--yellow);
+  color: var(--yellow);
+  border-radius:50%;
+  width:56px; height:56px;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column;
+  font-size:0.62rem; font-weight:700; line-height:1.15;
+  text-align:center;
+  flex-shrink:0;
+  transform: rotate(-8deg);
+}
+
+/* ---------- layout: two-part ticket ---------- */
+.floor{
+  display:grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap:28px;
+  align-items:start;
+}
+@media (max-width: 760px){
+  .floor{ grid-template-columns: 1fr; }
+}
+
+.ticket, .stub{
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 6px;
+  position: relative;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.35);
+}
+
+.ticket-perf, .stub-perf{
+  height:14px;
+  background-image: radial-gradient(circle, var(--bg) 3.5px, transparent 3.6px);
+  background-size: 18px 18px;
+  background-position: 6px -7px;
+  border-bottom: 1px dashed rgba(43,42,40,0.25);
+}
+
+.ticket-form{ padding: 6px 26px 26px; }
+.ticket-head{
+  display:flex; justify-content:space-between; align-items:baseline;
+  padding: 16px 26px 10px;
+}
+.ticket-label{
+  font-family:'Oswald',sans-serif; font-weight:600; letter-spacing:2px;
+  font-size:0.78rem; color: var(--rust);
+}
+.ticket-serial{ font-size:0.7rem; color: var(--ink-soft); }
+
+.field{ margin-bottom:16px; }
+.field-row{ display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+
+label{
+  display:block; font-size:0.72rem; font-weight:700; letter-spacing:0.4px;
+  margin-bottom:6px; color: var(--ink-soft); text-transform:uppercase;
+}
+label small{ text-transform:none; font-weight:400; opacity:0.8; }
+.fnum{
+  display:inline-block; width:20px; height:20px; line-height:20px;
+  text-align:center; background: var(--ink); color: var(--paper);
+  border-radius:3px; font-size:0.62rem; margin-right:6px;
+}
+
+input, select{
+  width:100%;
+  font-family:'JetBrains Mono', monospace;
+  font-size:0.92rem;
+  padding:9px 10px;
+  border: none;
+  border-bottom: 2px solid rgba(43,42,40,0.35);
+  background: rgba(43,42,40,0.04);
+  color: var(--ink);
+  border-radius: 3px 3px 0 0;
+}
+input:focus, select:focus{
+  outline: none;
+  border-bottom-color: var(--teal);
+  background: rgba(63,140,130,0.08);
+}
+
+.stamp-btn{
+  width:100%;
+  margin-top:8px;
+  padding: 13px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: 4px;
+  font-family:'Oswald', sans-serif;
+  font-weight:600;
+  letter-spacing: 1.5px;
+  font-size: 0.9rem;
+  cursor:pointer;
+  transition: transform 0.12s ease, background 0.15s ease;
+}
+.stamp-btn:hover{ background: var(--rust); }
+.stamp-btn:active{ transform: scale(0.98); }
+
+.ticket-error{
+  color: var(--rust); font-size:0.78rem; margin-top:12px; margin-bottom:0;
+}
+
+/* ---------- stub / result ---------- */
+.stub{ min-height: 100%; display:flex; flex-direction:column; }
+.stub-empty{
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; color: var(--ink-soft); padding: 50px 30px; gap:14px;
+}
+.gauge-icon{ width:44px; height:44px; opacity:0.5; }
+.stub-empty p{ font-size:0.82rem; line-height:1.6; margin:0; }
+
+.stamp-wrap{
+  flex:1; display:flex; align-items:center; justify-content:center;
+  padding: 30px 20px 10px;
+}
+.stamp{
+  position:relative;
+  width: 220px; height:220px;
+  display:flex; align-items:center; justify-content:center;
+  color: var(--rust);
+  transform: rotate(-7deg);
+  animation: stampdown 0.4s cubic-bezier(.2,1.4,.4,1);
+}
+@keyframes stampdown{
+  0%{ transform: rotate(-7deg) scale(1.6); opacity:0; }
+  70%{ transform: rotate(-7deg) scale(0.94); opacity:1; }
+  100%{ transform: rotate(-7deg) scale(1); opacity:1; }
+}
+.stamp-ring{ position:absolute; inset:0; width:100%; height:100%; }
+.stamp-copy{
+  position:relative; text-align:center; padding: 0 20px;
+}
+.stamp-eyebrow{
+  display:block; font-family:'Oswald',sans-serif; font-size:0.62rem;
+  letter-spacing:2px; text-transform:uppercase; margin-bottom:4px;
+}
+.stamp-figure{
+  display:block; font-family:'Oswald',sans-serif; font-weight:700;
+  font-size:2rem; letter-spacing:1px;
+}
+.stamp-sub{ display:block; font-size:0.68rem; margin-top:4px; opacity:0.85; }
+
+.stub-note{
+  font-size: 0.72rem; line-height:1.6; color: var(--ink-soft);
+  padding: 4px 26px 22px; margin:0;
+}
+
+/* ---------- footer ---------- */
+.shop-footer{
+  display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  margin-top: 34px; padding-top:16px;
+  border-top: 1px solid rgba(233,228,216,0.12);
+  font-size: 0.68rem; color: var(--muted); letter-spacing:0.3px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  .stamp{ animation:none; }
+}

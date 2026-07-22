@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roadworthy — Vehicle Valuation Ticket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="garage-bg">
+  <div class="chalk-scratch s1"></div>
+  <div class="chalk-scratch s2"></div>
+</div>
+
+<main class="wrap">
+
+  <header class="shop-header">
+    <div class="shop-mark">
+      <svg viewBox="0 0 48 48" class="wrench-icon" aria-hidden="true">
+        <path d="M33 6a9 9 0 0 0-11.4 11.4L6 33l5 5 15.6-15.6A9 9 0 0 0 42 15l-6 6-5-5 6-6a9 9 0 0 0-4-4z"
+              fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="shop-title">
+      <h1>ROADWORTHY&nbsp;<span class="dim">MOTOR&nbsp;APPRAISALS</span></h1>
+      <p class="tagline">Bay&nbsp;3 valuation desk — enter the specs, get a number you can trust</p>
+    </div>
+    <div class="shop-badge">EST.<br>{{ meta.year_min }}</div>
+  </header>
+
+  <div class="floor">
+
+    <section class="ticket">
+      <div class="ticket-perf" aria-hidden="true"></div>
+
+      <div class="ticket-head">
+        <span class="ticket-label">FIELD SHEET</span>
+        <span class="ticket-serial">NO. VP-{{ meta.metrics.r2 * 10000 | int }}</span>
+      </div>
+
+      <form method="POST" action="/predict" class="ticket-form">
+
+        <div class="field">
+          <label for="brand"><span class="fnum">01</span> Make</label>
+          <select id="brand" name="brand" required>
+            {% for b in meta.brands %}
+            <option value="{{ b }}" {% if form and form.brand == b %}selected{% endif %}>{{ b }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="year"><span class="fnum">02</span> Model year</label>
+            <input type="number" id="year" name="year" min="{{ meta.year_min }}" max="{{ meta.year_max }}"
+                   value="{{ form.year if form else 2019 }}" required>
+          </div>
+          <div class="field">
+            <label for="owner"><span class="fnum">03</span> Owners</label>
+            <select id="owner" name="owner" required>
+              <option value="0" {% if form and form.owner == '0' %}selected{% endif %}>1st owner</option>
+              <option value="1" {% if form and form.owner == '1' %}selected{% endif %}>2nd owner</option>
+              <option value="2" {% if form and form.owner == '2' %}selected{% endif %}>3rd owner</option>
+              <option value="3" {% if form and form.owner == '3' %}selected{% endif %}>4th+ owner</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="present_price"><span class="fnum">04</span> Current showroom price <small>(lakhs ₹)</small></label>
+          <input type="number" id="present_price" name="present_price" step="0.1" min="0"
+                 value="{{ form.present_price if form else 9.5 }}" required>
+        </div>
+
+        <div class="field">
+          <label for="kms_driven"><span class="fnum">05</span> Odometer <small>(km)</small></label>
+          <input type="number" id="kms_driven" name="kms_driven" step="100" min="0"
+                 value="{{ form.kms_driven if form else 45000 }}" required>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="fuel_type"><span class="fnum">06</span> Fuel</label>
+            <select id="fuel_type" name="fuel_type" required>
+              {% for f in meta.fuel_types %}
+              <option value="{{ f }}" {% if form and form.fuel_type == f %}selected{% endif %}>{{ f }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="field">
+            <label for="transmission"><span class="fnum">07</span> Gearbox</label>
+            <select id="transmission" name="transmission" required>
+              {% for t in meta.transmissions %}
+              <option value="{{ t }}" {% if form and form.transmission == t %}selected{% endif %}>{{ t }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="seller_type"><span class="fnum">08</span> Selling as</label>
+          <select id="seller_type" name="seller_type" required>
+            {% for s in meta.seller_types %}
+            <option value="{{ s }}" {% if form and form.seller_type == s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <button type="submit" class="stamp-btn">
+          RUN&nbsp;APPRAISAL
+        </button>
+
+        {% if error %}
+        <p class="ticket-error">⚠ Couldn't read that ticket — {{ error }}</p>
+        {% endif %}
+      </form>
+    </section>
+
+    <section class="stub" aria-live="polite">
+      <div class="stub-perf" aria-hidden="true"></div>
+
+      {% if prediction %}
+      <div class="stamp-wrap">
+        <div class="stamp">
+          <svg viewBox="0 0 200 200" class="stamp-ring" aria-hidden="true">
+            <circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-width="3"/>
+            <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <div class="stamp-copy">
+            <span class="stamp-eyebrow">Appraised&nbsp;value</span>
+            <span class="stamp-figure">₹{{ "%.2f"|format(prediction.selling_price_lakhs) }}L</span>
+            <span class="stamp-sub">≈ ₹{{ "{:,}".format(prediction.selling_price_inr) }}</span>
+          </div>
+        </div>
+      </div>
+      <p class="stub-note">Estimate from a random-forest model trained on {{ meta.metrics.r2 * 100 }}% explained
+        variance (R²&nbsp;{{ meta.metrics.r2 }}, avg. error ±₹{{ meta.metrics.mae_lakhs }}L). Not a formal
+        inspection — actual resale value depends on condition, service history and local demand.</p>
+      {% else %}
+      <div class="stub-empty">
+        <svg viewBox="0 0 64 64" class="gauge-icon" aria-hidden="true">
+          <circle cx="32" cy="32" r="26" fill="none" stroke="currentColor" stroke-width="2"/>
+          <path d="M32 32 L44 20" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="32" cy="32" r="3" fill="currentColor"/>
+        </svg>
+        <p>Fill in the field sheet and run the appraisal.<br>Your stamped valuation prints here.</p>
+      </div>
+      {% endif %}
+    </section>
+
+  </div>
+
+  <footer class="shop-footer">
+    <span>Model: RandomForestRegressor · scikit-learn</span>
+    <span>Synthetic training data — for demonstration purposes</span>
+  </footer>
+
+</main>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "brands": [
+    "Ford",
+    "Honda",
+    "Hyundai",
+    "Mahindra",
+    "Maruti",
+    "Renault",
+    "Skoda",
+    "Tata",
+    "Toyota",
+    "Volkswagen"
+  ],
+  "fuel_types": [
+    "CNG",
+    "Diesel",
+    "Petrol"
+  ],
+  "seller_types": [
+    "Dealer",
+    "Individual"
+  ],
+  "transmissions": [
+    "Automatic",
+    "Manual"
+  ],
+  "year_min": 2008,
+  "year_max": 2026,
+  "metrics": {
+    "mae_lakhs": 0.198,
+    "r2": 0.9823
+  }
+}
